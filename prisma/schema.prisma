@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  role      String   @default("student") // "student" or "clinic"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  medicalInfo   MedicalInfo?
+  resolvedEmergencies Emergency[] @relation("ResolvedBy")
+}
+
+model MedicalInfo {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  allergies   String?
+  conditions  String?
+  medications String?
+  bloodType   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emergencies Emergency[]
+}
+
+model Emergency {
+  id            String    @id @default(cuid())
+  emergencyType String
+  location      String
+  description   String
+  reporterMatNo String
+  victimMatNo   String
+  status        String    @default("active") // "active" or "resolved"
+  createdAt     DateTime  @default(now())
+  resolvedAt    DateTime?
+  resolvedById  String?
+  medicalInfoId String?
+
+  // Relations
+  resolvedBy  User?        @relation("ResolvedBy", fields: [resolvedById], references: [id])
+  medicalInfo MedicalInfo? @relation(fields: [medicalInfoId], references: [id])
+}
