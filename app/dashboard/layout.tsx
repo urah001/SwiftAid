@@ -1,25 +1,33 @@
-import type React from "react"
-import { redirect } from "next/navigation"
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
+import type React from "react";
+import { redirect } from "next/navigation";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
-import { DashboardNav } from "@/components/dashboard-nav"
-import { UserNav } from "@/components/user-nav"
-import { getUserRole } from "@/lib/auth"
+import { DashboardNav } from "@/components/dashboard-nav";
+import { UserNav } from "@/components/user-nav";
+import { getUserRole } from "@/lib/auth";
 
 export default async function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const { getUser, isAuthenticated } = getKindeServerSession()
-  const user = await getUser()
-  const isAuth = await isAuthenticated()
+  const data = {
+    id: "1jhsb7623fdqwd6bqwyqfgwb87q",
+    email: "anon6445@gmail.com",
+    given_name: "xam",
+    family_name: "well",
+  };
+  const { getUser, isAuthenticated } = getKindeServerSession();
+  const user = await getUser();
+  const isAuth = await isAuthenticated();
 
   if (!isAuth || !user) {
-    redirect("/api/auth/login")
+    //redirect("/api/auth/login");
+    console.log("create account")
   }
 
-  const userRole = await getUserRole(user.id)
+  // const userRole = await getUserRole(user.id);
+  const userRole = await getUserRole(data.id);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -29,15 +37,18 @@ export default async function DashboardLayout({
             <span className="text-primary">MedAlert</span>
             <span>Response System</span>
           </div>
-          <UserNav user={user} />
+          {/* <UserNav user={user} /> */}
+          <UserNav user={data} />
         </div>
       </header>
       <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
         <aside className="hidden w-[200px] flex-col md:flex">
           <DashboardNav userRole={userRole} />
         </aside>
-        <main className="flex w-full flex-1 flex-col overflow-hidden py-6">{children}</main>
+        <main className="flex w-full flex-1 flex-col overflow-hidden py-6">
+          {children}
+        </main>
       </div>
     </div>
-  )
+  );
 }
