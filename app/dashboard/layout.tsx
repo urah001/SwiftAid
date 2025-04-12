@@ -11,6 +11,12 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
+  const data = {
+    id: "1jhsb7623fdqwd6bqwyqfgwb87q",
+    email: "anon6445@gmail.com",
+    given_name: "xam",
+    family_name: "well",
+  };
   const { getUser, isAuthenticated } = getKindeServerSession()
   const user = await getUser()
   const isAuth = await isAuthenticated()
@@ -29,7 +35,10 @@ export default async function DashboardLayout({
             <span className="text-primary">MedAlert</span>
             <span>Response System</span>
           </div>
-          <UserNav user={user} />
+          {/* uncomment this line after you add kinde auth */}
+          {/* <UserNav user={user} /> */}
+          {/* comment this line after you add kinde auth */}
+          <UserNav user={data} />
         </div>
       </header>
       <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
