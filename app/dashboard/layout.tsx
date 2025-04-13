@@ -1,5 +1,5 @@
 import type React from "react";
-import { redirect } from "next/navigation";
+//import { redirect } from "next/navigation";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 import { DashboardNav } from "@/components/dashboard-nav";
