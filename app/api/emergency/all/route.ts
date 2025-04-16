@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server"
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
-
 import { isClinicStaff } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 
 // Set this to true to bypass authentication during development
 const BYPASS_AUTH_FOR_TESTING = true
 
-export async function GET() {
+export async function GET() { 
   try {
     // Skip authentication check if bypass flag is enabled
     if (!BYPASS_AUTH_FOR_TESTING) {
