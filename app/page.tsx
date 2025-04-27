@@ -20,9 +20,9 @@ export default function Home() {
               </Link>
             </LoginLink>
             <RegisterLink>
-              <Button>
-                <Link href={"/signup"}>Sign up</Link>
-              </Button>
+              <Link href={"/signup"}>
+                <Button>Sign up</Button>
+              </Link>
             </RegisterLink>
           </nav>
         </div>

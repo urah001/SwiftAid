@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { SetStateAction, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Bell, CheckCircle, Clock, MapPin, User } from "lucide-react"
 
@@ -50,7 +50,7 @@ export default function ClinicDashboard() {
     }
   }
 
-  const handleViewEmergency = (emergency) => {
+  const handleViewEmergency = (emergency: SetStateAction<null>) => {
     setSelectedEmergency(emergency)
     setIsDialogOpen(true)
   }
@@ -93,7 +93,7 @@ export default function ClinicDashboard() {
     }
   }
 
-  const formatTimestamp = (timestamp) => {
+  const formatTimestamp = (timestamp: string | number | Date) => {
     return new Date(timestamp).toLocaleString()
   }
 

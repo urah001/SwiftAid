@@ -1,6 +1,6 @@
 // app/login/page.tsx
+// this page , based on the user input they get sent either to the student or the clinic dashboard
 "use client";
-
 import { Button } from "@/components/ui/button"; // Assuming you have a button component
 //import { login } from "@/lib/kinde"; // Your Kinde login function
 import Image from "next/image";
