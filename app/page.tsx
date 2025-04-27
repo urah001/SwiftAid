@@ -1,8 +1,8 @@
-import Link from "next/link"
-import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/server"
-import { ArrowRight } from "lucide-react"
+import Link from "next/link";
+import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/server";
+import { ArrowRight } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -15,10 +15,14 @@ export default function Home() {
           </div>
           <nav className="flex items-center gap-4">
             <LoginLink>
-              <Button variant="ghost">Log in</Button>
+              <Link href={"/login"}>
+                <Button variant="ghost">Log in</Button>
+              </Link>
             </LoginLink>
             <RegisterLink>
-              <Button>Sign up</Button>
+              <Button>
+                <Link href={"/signup"}>Sign up</Link>
+              </Button>
             </RegisterLink>
           </nav>
         </div>
@@ -33,7 +37,8 @@ export default function Home() {
                     Campus Emergency Response System
                   </h1>
                   <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Quick medical assistance for campus emergencies. Report incidents and get help fast.
+                    Quick medical assistance for campus emergencies. Report
+                    incidents and get help fast.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -55,7 +60,9 @@ export default function Home() {
                   <div className="h-full w-full rounded-full bg-background flex items-center justify-center">
                     <div className="text-center space-y-2 p-6">
                       <h3 className="text-2xl font-bold">Emergency Response</h3>
-                      <p className="text-gray-500">Fast. Reliable. Life-saving.</p>
+                      <p className="text-gray-500">
+                        Fast. Reliable. Life-saving.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -74,26 +81,32 @@ export default function Home() {
                   Report emergencies in three simple steps
                 </h2>
                 <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our system is designed to get medical help to those who need it as quickly as possible.
+                  Our system is designed to get medical help to those who need
+                  it as quickly as possible.
                 </p>
               </div>
               <div className="grid gap-6">
                 <div className="grid gap-1">
-                  <h3 className="text-xl font-bold">1. Sign up with your student ID</h3>
+                  <h3 className="text-xl font-bold">
+                    1. Sign up with your student ID
+                  </h3>
                   <p className="text-gray-500">
-                    Register using your matriculation number and add your medical information.
+                    Register using your matriculation number and add your
+                    medical information.
                   </p>
                 </div>
                 <div className="grid gap-1">
                   <h3 className="text-xl font-bold">2. Report an emergency</h3>
                   <p className="text-gray-500">
-                    Quickly submit details about the emergency and location using campus landmarks.
+                    Quickly submit details about the emergency and location
+                    using campus landmarks.
                   </p>
                 </div>
                 <div className="grid gap-1">
                   <h3 className="text-xl font-bold">3. Help arrives</h3>
                   <p className="text-gray-500">
-                    Medical staff receives the alert with all necessary information and responds promptly.
+                    Medical staff receives the alert with all necessary
+                    information and responds promptly.
                   </p>
                 </div>
               </div>
@@ -103,7 +116,9 @@ export default function Home() {
       </main>
       <footer className="border-t py-6 md:py-0">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row">
-          <p className="text-sm text-gray-500">© 2024 MedAlert Response System. All rights reserved.</p>
+          <p className="text-sm text-gray-500">
+            © 2024 MedAlert Response System. All rights reserved.
+          </p>
           <div className="flex gap-4 text-sm text-gray-500">
             <Link href="/terms" className="hover:underline">
               Terms
@@ -115,5 +130,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
