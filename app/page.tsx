@@ -15,9 +15,9 @@ export default function Home() {
           </div>
           <nav className="flex items-center gap-4">
             <LoginLink>
-              <Link href={"/login"}>
-                <Button variant="ghost">Log in</Button>
-              </Link>
+              <Button variant="ghost">
+                <Link href={"/login"}>Log in</Link>
+              </Button>
             </LoginLink>
             <RegisterLink>
               <Link href={"/signup"}>
