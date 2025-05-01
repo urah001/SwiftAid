@@ -4,7 +4,6 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs"
 import { AlertCircle, CheckCircle2 } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -63,7 +62,7 @@ export default function StudentDashboard() {
         toast({
           title: "Emergency reported",
           description: "Medical staff has been notified and will respond shortly.",
-          variant: "success",
+          variant: "default",
         })
 
         // Reset form
