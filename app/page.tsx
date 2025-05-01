@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/server";
 import { ArrowRight } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
