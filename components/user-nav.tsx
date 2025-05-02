@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { LogOutIcon, Settings, User } from "lucide-react"
-import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components"
+import Link from "next/link";
+import { LogOutIcon, Settings, User } from "lucide-react";
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,25 +14,27 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 interface UserNavProps {
   user: {
-    id: string
-    email?: string
-    given_name?: string
-    family_name?: string
-  }
+    id?: string | undefined;
+    email?: string | undefined;
+    given_name?: string | undefined;
+    family_name?: string | undefined;
+  };
 }
 
 export function UserNav({ user }: UserNavProps) {
   const initials =
     user?.given_name && user?.family_name
       ? `${user.given_name[0]}${user.family_name[0]}`
-      : user?.email?.substring(0, 2).toUpperCase() || "U"
+      : user?.email?.substring(0, 2).toUpperCase() || "U";
 
   const displayName =
-    user?.given_name && user?.family_name ? `${user.given_name} ${user.family_name}` : user?.email || "User"
+    user?.given_name && user?.family_name
+      ? `${user.given_name} ${user.family_name}`
+      : user?.email || "User";
 
   return (
     <DropdownMenu>
@@ -48,7 +50,9 @@ export function UserNav({ user }: UserNavProps) {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{displayName}</p>
-            <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {user?.email}
+            </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -75,5 +79,5 @@ export function UserNav({ user }: UserNavProps) {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
