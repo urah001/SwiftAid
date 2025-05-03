@@ -14,8 +14,8 @@ export default async function DashboardPage() {
   const user = await getUser()
 
   if (!user) {
-    //redirect("/api/auth/login")
-    console.log("create acc")
+    redirect("/api/auth/login")
+    //console.log("create acc")
   }
 
   const userRole = await getUserRole(data.id)
