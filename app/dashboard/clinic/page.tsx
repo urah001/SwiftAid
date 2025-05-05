@@ -69,7 +69,8 @@ export default function ClinicDashboard() {
         toast({
           title: "Emergency resolved",
           description: "The emergency has been marked as resolved.",
-          variant: "success",
+          // variant: "success",
+          variant: "default",
         })
 
         // Update local state

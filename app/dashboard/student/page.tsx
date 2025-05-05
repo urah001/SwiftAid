@@ -39,7 +39,7 @@ export default function StudentDashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [recentReports, setRecentReports] = useState([])
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault()
     setIsSubmitting(true)
 
