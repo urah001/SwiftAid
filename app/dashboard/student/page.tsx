@@ -26,6 +26,12 @@ const campusLocations = [
   "Parking Lot",
   "Administration Building",
 ]
+type EmergencyReport = {
+  id: string
+  emergencyType: string
+  location: string
+  status: "resolved" | "pending"
+}
 
 export default function StudentDashboard() {
   const { user } = useKindeBrowserClient()
@@ -37,7 +43,9 @@ export default function StudentDashboard() {
   const [victimMatNo, setVictimMatNo] = useState("")
   const [description, setDescription] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [recentReports, setRecentReports] = useState([])
+//  const [recentReports, setRecentReports] = useState([])
+  const [recentReports, setRecentReports] = useState<EmergencyReport[]>([])
+
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault()
@@ -208,7 +216,7 @@ export default function StudentDashboard() {
           <CardDescription>History of emergencies you've reported</CardDescription>
         </CardHeader>
         <CardContent>
-          {recentReports.length > 0 ? (
+        {recentReports.length > 0 ? (
             <div className="space-y-4">
               {recentReports.map((report) => (
                 <div key={report.id} className="flex items-center gap-4 rounded-lg border p-4">

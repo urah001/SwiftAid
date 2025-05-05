@@ -18,10 +18,10 @@ import {
 
 interface UserNavProps {
   user: {
-    id?: string | undefined;
-    email?: string | undefined;
-    given_name?: string | undefined;
-    family_name?: string | undefined;
+    id?: string;
+    email?: string ;
+    given_name?: string ;
+    family_name?: string;
   };
 }
 
