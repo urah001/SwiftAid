@@ -1,14 +1,27 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs"
 import { AlertCircle, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
 
@@ -27,6 +40,13 @@ const campusLocations = [
   "Administration Building",
 ]
 
+type EmergencyReport = {
+  id: string
+  emergencyType: string
+  location: string
+  status: "resolved" | "pending"
+}
+
 export default function StudentDashboard() {
   const { user } = useKindeBrowserClient()
   const { toast } = useToast()
@@ -37,9 +57,9 @@ export default function StudentDashboard() {
   const [victimMatNo, setVictimMatNo] = useState("")
   const [description, setDescription] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [recentReports, setRecentReports] = useState([])
+  const [recentReports, setRecentReports] = useState<EmergencyReport[]>([])
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault()
     setIsSubmitting(true)
 
@@ -52,7 +72,7 @@ export default function StudentDashboard() {
         body: JSON.stringify({
           emergencyType,
           location,
-          victimMatNo: victimMatNo || user?.email, // If no victim specified, reporter is victim
+          victimMatNo: victimMatNo || user?.email,
           description,
           reporterMatNo: user?.email,
         }),
@@ -61,17 +81,16 @@ export default function StudentDashboard() {
       if (response.ok) {
         toast({
           title: "Emergency reported",
-          description: "Medical staff has been notified and will respond shortly.",
+          description:
+            "Medical staff has been notified and will respond shortly.",
           variant: "default",
         })
 
-        // Reset form
         setEmergencyType("")
         setLocation("")
         setVictimMatNo("")
         setDescription("")
 
-        // Refresh reports
         fetchRecentReports()
       } else {
         throw new Error("Failed to submit report")
@@ -79,7 +98,8 @@ export default function StudentDashboard() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to submit emergency report. Please try again.",
+        description:
+          "Failed to submit emergency report. Please try again.",
         variant: "destructive",
       })
     } finally {
@@ -99,11 +119,22 @@ export default function StudentDashboard() {
     }
   }
 
+  // ✅ Fetch reports on page load
+  useEffect(() => {
+    fetchRecentReports()
+    // Set up polling for new emergencies
+    const interval = setInterval(fetchRecentReports, 2000) // Poll every 2 seconds
+  }, [])
+
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Student Dashboard</h2>
-        <p className="text-muted-foreground">Report emergencies or update your medical information.</p>
+        <h2 className="text-2xl font-bold tracking-tight">
+          Student Dashboard
+        </h2>
+        <p className="text-muted-foreground">
+          Report emergencies or update your medical information.
+        </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -113,20 +144,28 @@ export default function StudentDashboard() {
               <AlertCircle className="h-5 w-5 text-red-500" />
               Report Emergency
             </CardTitle>
-            <CardDescription>Submit details about a medical emergency on campus</CardDescription>
+            <CardDescription>
+              Submit details about a medical emergency on campus
+            </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="emergency-type">Emergency Type</Label>
-                <Select value={emergencyType} onValueChange={setEmergencyType} required>
+                <Select
+                  value={emergencyType}
+                  onValueChange={setEmergencyType}
+                  required
+                >
                   <SelectTrigger id="emergency-type">
                     <SelectValue placeholder="Select emergency type" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="medical">Medical Emergency</SelectItem>
                     <SelectItem value="injury">Injury/Accident</SelectItem>
-                    <SelectItem value="mental">Mental Health Crisis</SelectItem>
+                    <SelectItem value="mental">
+                      Mental Health Crisis
+                    </SelectItem>
                     <SelectItem value="other">Other Emergency</SelectItem>
                   </SelectContent>
                 </Select>
@@ -134,7 +173,11 @@ export default function StudentDashboard() {
 
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
-                <Select value={location} onValueChange={setLocation} required>
+                <Select
+                  value={location}
+                  onValueChange={setLocation}
+                  required
+                >
                   <SelectTrigger id="location">
                     <SelectValue placeholder="Select campus location" />
                   </SelectTrigger>
@@ -149,7 +192,9 @@ export default function StudentDashboard() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="victim-matno">Victim&apos;s Matriculation Number (if not you)</Label>
+                <Label htmlFor="victim-matno">
+                  Victim&apos;s Matriculation Number (if not you)
+                </Label>
                 <Input
                   id="victim-matno"
                   placeholder="Leave blank if you are the victim"
@@ -180,7 +225,9 @@ export default function StudentDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Your Medical Information</CardTitle>
-            <CardDescription>Update your medical information for emergency responders</CardDescription>
+            <CardDescription>
+              Update your medical information for emergency responders
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">

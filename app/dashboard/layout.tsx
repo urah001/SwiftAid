@@ -1,33 +1,31 @@
 import type React from "react";
-//import { redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-
 import { DashboardNav } from "@/components/dashboard-nav";
 import { UserNav } from "@/components/user-nav";
-import { getUserRole } from "@/lib/auth";
+import { getUserRole, upsertUser } from "@/lib/auth";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const data = {
-    id: "1jhsb7623fdqwd6bqwyqfgwb87q",
-    email: "anon6445@gmail.com",
-    given_name: "xam",
-    family_name: "well",
-  };
   const { getUser, isAuthenticated } = getKindeServerSession();
   const user = await getUser();
-  const isAuth = await isAuthenticated();
 
-  if (!isAuth || !user) {
-    //redirect("/api/auth/login");
-    console.log("create account")
+  if (!user) {
+    redirect("/api/auth/login");
   }
 
-  // const userRole = await getUserRole(user.id);
-  const userRole = await getUserRole(data.id);
+  // ✅ Upsert user in your DB
+  await upsertUser({
+    id: user.id,
+    email: user.email || "",
+    firstName: user.given_name || "",
+    lastName: user.family_name || "",
+  });
+
+  const userRole = await getUserRole(user.id);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -37,8 +35,7 @@ export default async function DashboardLayout({
             <span className="text-primary">MedAlert</span>
             <span>Response System</span>
           </div>
-          {/* <UserNav user={user} /> */}
-          <UserNav user={data} />
+          <UserNav user={user} />
         </div>
       </header>
       <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">

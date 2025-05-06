@@ -18,21 +18,50 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/components/ui/use-toast"
 
+type MedicalInfo = {
+  allergies?: string
+  conditions?: string
+  medications?: string
+}
+
+type Emergency = {
+  id: string
+  emergencyType: string
+  location: string
+  reporterMatNo: string
+  victimMatNo: string
+  createdAt: string
+  description: string
+  status: "active" | "resolved"
+  medicalInfo?: MedicalInfo
+}
+
+
 export default function ClinicDashboard() {
   const { toast } = useToast()
   const router = useRouter()
 
-  const [activeEmergencies, setActiveEmergencies] = useState([])
-  const [resolvedEmergencies, setResolvedEmergencies] = useState([])
-  const [selectedEmergency, setSelectedEmergency] = useState(null)
+  //const [activeEmergencies, setActiveEmergencies] = useState([])
+  //const [resolvedEmergencies, setResolvedEmergencies] = useState([])
+  //const [selectedEmergency, setSelectedEmergency] = useState(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  
+
+
+
+  const [activeEmergencies, setActiveEmergencies] = useState<Emergency[]>([])
+  const [resolvedEmergencies, setResolvedEmergencies] = useState<Emergency[]>([])
+  const [selectedEmergency, setSelectedEmergency] = useState<Emergency | null>(null)
+  
+
+
 
   useEffect(() => {
     fetchEmergencies()
 
     // Set up polling for new emergencies
-    const interval = setInterval(fetchEmergencies, 30000) // Poll every 30 seconds
+    const interval = setInterval(fetchEmergencies, 3000) // Poll every 30 seconds
 
     return () => clearInterval(interval)
   }, [])
@@ -69,7 +98,8 @@ export default function ClinicDashboard() {
         toast({
           title: "Emergency resolved",
           description: "The emergency has been marked as resolved.",
-          variant: "success",
+          // variant: "success",
+          variant: "default",
         })
 
         // Update local state
