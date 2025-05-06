@@ -1,6 +1,5 @@
-// This is your Prisma schema file,
+// This is the Prisma/db schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -51,7 +50,6 @@ model Emergency {
   resolvedAt    DateTime?
   resolvedById  String?
   medicalInfoId String?
-
   // Relations
   resolvedBy  User?        @relation("ResolvedBy", fields: [resolvedById], references: [id])
   medicalInfo MedicalInfo? @relation(fields: [medicalInfoId], references: [id])

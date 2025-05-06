@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/server";
+//import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/server";
+import {RegisterLink, LoginLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -13,15 +14,18 @@ export default function Home() {
             <span>Response System</span>
           </div>
           <nav className="flex items-center gap-4">
+            {/* login link */}
             <LoginLink>
-              <Button variant="ghost">
-                <Link href={"/login"}>Log in</Link>
-              </Button>
+              {/* <Link href={"/api/auth/login?"}> */}
+                <Button variant="ghost">Log in</Button>
+              {/* </Link> */}
             </LoginLink>
+
+            {/* Registration link */}
             <RegisterLink>
-              <Link href={"/signup"}>
+              {/* <Link href={"/api/auth/register?"}> */}
                 <Button>Sign up</Button>
-              </Link>
+              {/* </Link> */}
             </RegisterLink>
           </nav>
         </div>
