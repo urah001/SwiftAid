@@ -122,6 +122,8 @@ export default function StudentDashboard() {
   // ✅ Fetch reports on page load
   useEffect(() => {
     fetchRecentReports()
+    // Set up polling for new emergencies
+    const interval = setInterval(fetchRecentReports, 2000) // Poll every 2 seconds
   }, [])
 
   return (
