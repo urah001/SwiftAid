@@ -13,7 +13,6 @@ export const metadata: Metadata = {
   title: "SwiftAid - Campus Emergency Response System",
   description:
     "A web-based prompt response system for medical emergencies on campus",
-  generator: "v0.dev",
 };
 
 export default function RootLayout({
