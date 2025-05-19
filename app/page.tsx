@@ -10,7 +10,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-xl">
-            <span className="text-primary">MedAlert</span>
+            <span className="text-primary">SwiftAid</span>
             <span>Response System</span>
           </div>
           <nav className="flex items-center gap-4">
@@ -37,7 +37,7 @@ export default function Home() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                    Campus Emergency Response System
+                   CUSTECH Campus Emergency Response System
                   </h1>
                   <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                     Quick medical assistance for campus emergencies. Report
@@ -120,7 +120,7 @@ export default function Home() {
       <footer className="border-t py-6 md:py-0">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row">
           <p className="text-sm text-gray-500">
-            © 2024 MedAlert Response System. All rights reserved.
+            © 2025 SwiftAid Response System. All rights reserved.
           </p>
           <div className="flex gap-4 text-sm text-gray-500">
             <Link href="/terms" className="hover:underline">
