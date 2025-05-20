@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     const user = await getUser();
     const isAuth = await isAuthenticated();
 
+    // this conditional statement is used to check if user is a user or if user in not authenticated
     if (!isAuth || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
     const { emergencyType, location, victimMatNo, description, reporterMatNo } =
       await req.json();
 
-    // Validate required fields
+    // Validate required fields to check if the user filled them or not
     if (!emergencyType || !location || !description) {
       return NextResponse.json(
         { error: "Missing required fields" },

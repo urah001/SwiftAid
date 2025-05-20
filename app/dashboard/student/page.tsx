@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs"
-import { AlertCircle, CheckCircle2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,18 +12,18 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 
 const campusLocations = [
   "Main Library",
@@ -61,31 +61,34 @@ const campusLocations = [
   "School Field",
   "ICT Center",
   "Computer Lab",
-  
-]
+];
 
 type EmergencyReport = {
-  id: string
-  emergencyType: string
-  location: string
-  status: "resolved" | "pending"
-}
+  id: string;
+  emergencyType: string;
+  location: string;
+  status: "resolved" | "pending";
+};
 
 export default function StudentDashboard() {
-  const { user } = useKindeBrowserClient()
-  const { toast } = useToast()
-  const router = useRouter()
+  const { user } = useKindeBrowserClient();
+  const { toast } = useToast();
+  const router = useRouter();
 
-  const [emergencyType, setEmergencyType] = useState("")
-  const [location, setLocation] = useState("")
-  const [victimMatNo, setVictimMatNo] = useState("")
-  const [description, setDescription] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [recentReports, setRecentReports] = useState<EmergencyReport[]>([])
-
+  const [emergencyType, setEmergencyType] = useState("");
+  const [location, setLocation] = useState("");
+  const [victimMatNo, setVictimMatNo] = useState("");
+  const [description, setDescription] = useState("");
+  const [allergies, setAllergies] = useState("");
+  const [condition, setCondition] = useState("");
+  const [medication, setMedication] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [recentReports, setRecentReports] = useState<EmergencyReport[]>([]);
+  // this is the funtion to send the report to the database
   const handleSubmit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const response = await fetch("/api/emergency/report", {
@@ -100,7 +103,7 @@ export default function StudentDashboard() {
           description,
           reporterMatNo: user?.email,
         }),
-      })
+      });
 
       if (response.ok) {
         toast({
@@ -108,54 +111,97 @@ export default function StudentDashboard() {
           description:
             "Medical staff has been notified and will respond shortly.",
           variant: "default",
-        })
+        });
 
-        setEmergencyType("")
-        setLocation("")
-        setVictimMatNo("")
-        setDescription("")
+        setEmergencyType("");
+        setLocation("");
+        setVictimMatNo("");
+        setDescription("");
 
-        fetchRecentReports()
+        fetchRecentReports();
       } else {
-        throw new Error("Failed to submit report")
+        throw new Error("Failed to submit report");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit emergency report. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const fetchRecentReports = async () => {
+    try {
+      const response = await fetch("/api/emergency/user-reports");
+      if (response.ok) {
+        const data = await response.json();
+        setRecentReports(data.reports);
+      }
+    } catch (error) {
+      console.error("Failed to fetch reports:", error);
+    }
+  };
+
+  // this is the funtion to send the user medical information to the database
+  // this function would be called only once make the component display none , or rethink this so the student can update their database everytime
+  const handleUpdate = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    setIsUpdating(true);
+
+    try {
+      const response = await fetch("/api/emergency/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        //these are the json data that would be sent to the database , it must b same as the collection type in the database
+        body: JSON.stringify({
+          allergies,
+          condition,
+          medication,
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Medical Information Updated successfully",
+          description: "Medical Information has been updated.",
+          variant: "default",
+        });
+
+        setAllergies("");
+        setCondition("");
+        setMedication("");
+      } else {
+        throw new Error("Failed to Update medical Record");
       }
     } catch (error) {
       toast({
         title: "Error",
         description:
-          "Failed to submit emergency report. Please try again.",
+          "Failed to update medical report report. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsUpdating(false);
     }
-  }
-
-  const fetchRecentReports = async () => {
-    try {
-      const response = await fetch("/api/emergency/user-reports")
-      if (response.ok) {
-        const data = await response.json()
-        setRecentReports(data.reports)
-      }
-    } catch (error) {
-      console.error("Failed to fetch reports:", error)
-    }
-  }
+  };
 
   // ✅ Fetch reports on page load
+  //try not to increase this polling funtion , it causes the system to crash because of too frequent reload of the server
   useEffect(() => {
-    fetchRecentReports()
+    fetchRecentReports();
     // Set up polling for new emergencies
-    const interval = setInterval(fetchRecentReports, 2000) // Poll every 2 seconds
-  }, [])
+    const interval = setInterval(fetchRecentReports, 20000); // Poll every 2 seconds
+  }, []);
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">
-          Student Dashboard
-        </h2>
+        <h2 className="text-2xl font-bold tracking-tight">Student Dashboard</h2>
         <p className="text-muted-foreground">
           Report emergencies or update your medical information.
         </p>
@@ -187,9 +233,7 @@ export default function StudentDashboard() {
                   <SelectContent>
                     <SelectItem value="medical">Medical Emergency</SelectItem>
                     <SelectItem value="injury">Injury/Accident</SelectItem>
-                    <SelectItem value="mental">
-                      Mental Health Crisis
-                    </SelectItem>
+                    <SelectItem value="mental">Mental Health Crisis</SelectItem>
                     <SelectItem value="other">Other Emergency</SelectItem>
                   </SelectContent>
                 </Select>
@@ -197,11 +241,7 @@ export default function StudentDashboard() {
 
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
-                <Select
-                  value={location}
-                  onValueChange={setLocation}
-                  required
-                >
+                <Select value={location} onValueChange={setLocation} required>
                   <SelectTrigger id="location">
                     <SelectValue placeholder="Select campus location" />
                   </SelectTrigger>
@@ -245,62 +285,99 @@ export default function StudentDashboard() {
             </CardFooter>
           </form>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Your Medical Information</CardTitle>
-            <CardDescription>
-              Update your medical information for emergency responders
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="allergies">Allergies</Label>
-              <Textarea id="allergies" placeholder="List any allergies you have" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="conditions">Medical Conditions</Label>
-              <Textarea id="conditions" placeholder="List any medical conditions" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="medications">Current Medications</Label>
-              <Textarea id="medications" placeholder="List any medications you're taking" />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button className="w-full">Update Medical Information</Button>
-          </CardFooter>
-        </Card>
+        {/* this is a component to update the database with the your medical information */}
+        <form onSubmit={handleUpdate}>
+          <Card>
+            <CardHeader>
+              <CardTitle>Your Medical Information</CardTitle>
+              <CardDescription>
+                Update your medical information for emergency responders
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="allergies">Allergies</Label>
+                <Textarea
+                  id="allergies"
+                  value={allergies}
+                  onChange={(e) => setAllergies(e.target.value)}
+                  placeholder="List any allergies you have"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="conditions">Medical Conditions</Label>
+                <Textarea
+                  id="conditions"
+                  onChange={(e) => setCondition(e.target.value)}
+                  value={condition}
+                  placeholder="List any medical conditions"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="medications">Current Medications</Label>
+                <Textarea
+                  id="medications"
+                  onChange={(e) => setMedication(e.target.value)}
+                  value={medication}
+                  placeholder="List any medications you're taking"
+                />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button type="submit" className="w-full" disabled={isUpdating}>
+                {isUpdating ? "Submitting..." : "Update Medical Record"}
+              </Button>
+            </CardFooter>
+          </Card>
+        </form>
       </div>
 
+      {/* this is a component to show your recent report */}
       <Card>
         <CardHeader>
           <CardTitle>Your Recent Reports</CardTitle>
-          <CardDescription>History of emergencies you've reported</CardDescription>
+          <CardDescription>
+            History of emergencies you've reported
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {recentReports.length > 0 ? (
             <div className="space-y-4">
               {recentReports.map((report) => (
-                <div key={report.id} className="flex items-center gap-4 rounded-lg border p-4">
+                <div
+                  key={report.id}
+                  className="flex items-center gap-4 rounded-lg border p-4"
+                >
                   <div className="flex-1">
                     <div className="font-medium">{report.emergencyType}</div>
-                    <div className="text-sm text-muted-foreground">{report.location}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {report.location}
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className={`text-sm ${report.status === "resolved" ? "text-green-500" : "text-amber-500"}`}>
+                    <div
+                      className={`text-sm ${
+                        report.status === "resolved"
+                          ? "text-green-500"
+                          : "text-amber-500"
+                      }`}
+                    >
                       {report.status === "resolved" ? "Resolved" : "Pending"}
                     </div>
-                    {report.status === "resolved" && <CheckCircle2 className="h-4 w-4 text-green-500" />}
+                    {report.status === "resolved" && (
+                      <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-center text-muted-foreground py-4">No emergency reports yet</p>
+            <p className="text-center text-muted-foreground py-4">
+              No emergency reports yet
+            </p>
           )}
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
