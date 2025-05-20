@@ -1,6 +1,9 @@
 import Link from "next/link";
 //import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/server";
-import {RegisterLink, LoginLink} from "@kinde-oss/kinde-auth-nextjs/components";
+import {
+  RegisterLink,
+  LoginLink,
+} from "@kinde-oss/kinde-auth-nextjs/components";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -17,14 +20,14 @@ export default function Home() {
             {/* login link */}
             <LoginLink>
               {/* <Link href={"/api/auth/login?"}> */}
-                <Button variant="ghost">Log in</Button>
+              <Button variant="ghost">Log in</Button>
               {/* </Link> */}
             </LoginLink>
 
             {/* Registration link */}
             <RegisterLink>
               {/* <Link href={"/api/auth/register?"}> */}
-                <Button>Sign up</Button>
+              <Button>Sign up</Button>
               {/* </Link> */}
             </RegisterLink>
           </nav>
@@ -37,7 +40,7 @@ export default function Home() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                   CUSTECH Campus Emergency Response System
+                    CUSTECH Campus Emergency Response System
                   </h1>
                   <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                     Quick medical assistance for campus emergencies. Report
@@ -51,11 +54,9 @@ export default function Home() {
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </RegisterLink>
-                  <Link href="/about">
-                    <Button size="lg" variant="outline">
-                      Learn More
-                    </Button>
-                  </Link>
+                  <Button size="lg" variant="outline">
+                    <Link href="/about">Learn More</Link>
+                  </Button>
                 </div>
               </div>
               <div className="flex items-center justify-center">
