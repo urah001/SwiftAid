@@ -29,12 +29,9 @@ const campusLocations = [
   "Main Library",
   "Science Building",
   "Student Center",
-  "Sports Complex",
-  "Engineering Block",
-  "Arts Building",
+  "Sports field",
+  "Engineering Faculty",
   "Medical Center",
-  "Dormitory A",
-  "Dormitory B",
   "Cafeteria",
   "Parking Lot",
   "Administration Building",
@@ -82,6 +79,7 @@ export default function StudentDashboard() {
   const [allergies, setAllergies] = useState("");
   const [condition, setCondition] = useState("");
   const [medication, setMedication] = useState("");
+  const [bloodType, setBloodType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [recentReports, setRecentReports] = useState<EmergencyReport[]>([]);
@@ -162,6 +160,7 @@ export default function StudentDashboard() {
           allergies,
           condition,
           medication,
+          bloodType,
         }),
       });
 
@@ -175,6 +174,7 @@ export default function StudentDashboard() {
         setAllergies("");
         setCondition("");
         setMedication("");
+        setBloodType(""); 
       } else {
         throw new Error("Failed to Update medical Record");
       }
@@ -320,6 +320,15 @@ export default function StudentDashboard() {
                   onChange={(e) => setMedication(e.target.value)}
                   value={medication}
                   placeholder="List any medications you're taking"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="bloodType">blood group</Label>
+                <Textarea
+                  id="bloodType"
+                  onChange={(e) => setBloodType(e.target.value)}
+                  value={bloodType}
+                  placeholder="what is your blood group.."
                 />
               </div>
             </CardContent>

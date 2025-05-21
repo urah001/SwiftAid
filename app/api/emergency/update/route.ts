@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { allergies, condition, medication } = await req.json();
+    const { allergies, condition, medication, bloodType } = await req.json();
 
     // Check if medical info already exists
     const existingInfo = await prisma.medicalInfo.findUnique({
@@ -26,6 +26,7 @@ export async function POST(req: Request) {
         where: { userId: user.id },
         data: {
           allergies,
+          bloodType,
           conditions: condition,
           medications: medication,
         },
@@ -36,6 +37,7 @@ export async function POST(req: Request) {
         data: {
           userId: user.id,
           allergies,
+          bloodType,
           conditions: condition,
           medications: medication,
         },
