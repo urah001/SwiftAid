@@ -46,10 +46,6 @@ export default function ClinicDashboard() {
   //const [selectedEmergency, setSelectedEmergency] = useState(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  
-
-
-
   const [activeEmergencies, setActiveEmergencies] = useState<Emergency[]>([])
   const [resolvedEmergencies, setResolvedEmergencies] = useState<Emergency[]>([])
   const [selectedEmergency, setSelectedEmergency] = useState<Emergency | null>(null)
