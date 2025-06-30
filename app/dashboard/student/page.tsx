@@ -28,7 +28,6 @@ import { useToast } from "@/components/ui/use-toast";
 const campusLocations = [
   "Main Library",
   "Science Building",
-  "Student Center",
   "Sports field",
   "Engineering Faculty",
   "Medical Center",
