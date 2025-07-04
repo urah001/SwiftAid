@@ -35,13 +35,13 @@ export async function GET() {
 
           const user = await prisma.user.findFirst({
             where: { matNo: e.victimMatNo || undefined },
-           // include: { medicalInfo: true },
+            include: { medicalInfo: true },
           });
-       //   console.log(user)
+          console.log(user)
 
           return {
             ...e,
-         //   medicalInfo: user?.medicalInfo || null,
+            medicalInfo: user?.medicalInfo,
           };
         } catch (err) {
           console.error(`Failed to get medical info for ${e.victimMatNo}:`, err);

@@ -72,7 +72,7 @@ export default function ClinicDashboard() {
     fetch("/api/emergency/all")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        //console.log(data);
         setEmergencyData(data);
       })
       .catch((err) => {
@@ -95,11 +95,23 @@ export default function ClinicDashboard() {
   };
 
   //const handleViewEmergency = (emergency: SetStateAction<null>) => {
-  const handleViewEmergency = (emergency: Emergency) => {
-    setSelectedEmergency(emergency);
-
-    setIsDialogOpen(true);
-  };
+    const handleViewEmergency = async (emergency: Emergency) => {
+      setIsDialogOpen(true);
+    
+      try {
+        const res = await fetch(`/api/medical-info/${emergency.victimMatNo}`);
+        const medicalInfo = await res.json();
+    
+        setSelectedEmergency({
+          ...emergency,
+          medicalInfo: medicalInfo || undefined,
+        });
+      } catch (err) {
+        console.error("Failed to fetch medical info", err);
+        setSelectedEmergency(emergency); // Still show the emergency without medical info
+      }
+    };
+    
 
   const handleResolveEmergency = async () => {
     if (!selectedEmergency) return;
@@ -297,84 +309,81 @@ export default function ClinicDashboard() {
       </div>
 
       {selectedEmergency && (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle>Emergency Details</DialogTitle>
-              <DialogDescription>
-                Complete information about the reported emergency
-              </DialogDescription>
-            </DialogHeader>
+  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Emergency Details</DialogTitle>
+        <DialogDescription>
+          Full medical and emergency report
+        </DialogDescription>
+      </DialogHeader>
 
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <span className="text-sm font-medium">Type:</span>
-                <span className="col-span-3">
-                  {selectedEmergency.emergencyType}
-                </span>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <span className="text-sm font-medium">Location:</span>
-                <span className="col-span-3">{selectedEmergency.location}</span>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <span className="text-sm font-medium">Reporter:</span>
-                <span className="col-span-3">
-                  {selectedEmergency.reporterMatNo}
-                </span>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <span className="text-sm font-medium">Victim:</span>
-                <span className="col-span-3">
-                  {selectedEmergency.victimMatNo}
-                </span>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <span className="text-sm font-medium">Time:</span>
-                <span className="col-span-3">
-                  {formatTimestamp(selectedEmergency.createdAt)}
-                </span>
-              </div>
-              <div className="grid grid-cols-4 items-start gap-4">
-                <span className="text-sm font-medium">Description:</span>
-                <p className="col-span-3">{selectedEmergency.description}</p>
-              </div>
-              {/* displays the medical info of a selected mat no */}
-              {selectedEmergency.medicalInfo ? (
-                <div className="grid grid-cols-4 items-start gap-4">
-                  <span className="text-sm font-medium">Medical Info:</span>
-                  <div className="col-span-3">
-                    <p>
-                      <strong>Allergies:</strong>{" "}
-                      {selectedEmergency.medicalInfo.allergies || "None"}
-                    </p>
-                    <p>
-                      <strong>Conditions:</strong>{" "}
-                      {selectedEmergency.medicalInfo.conditions || "None"}
-                    </p>
-                    <p>
-                      <strong>Medications:</strong>{" "}
-                      {selectedEmergency.medicalInfo.medications || "None"}
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-muted-foreground italic">
-                  No medical info provided.
-                </p>
-              )}
+      <div className="grid gap-4 py-4">
+        <div className="grid grid-cols-4 items-center gap-4">
+          <span className="text-sm font-medium">Type:</span>
+          <span className="col-span-3">{selectedEmergency.emergencyType}</span>
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <span className="text-sm font-medium">Location:</span>
+          <span className="col-span-3">{selectedEmergency.location}</span>
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <span className="text-sm font-medium">Reporter:</span>
+          <span className="col-span-3">{selectedEmergency.reporterMatNo}</span>
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <span className="text-sm font-medium">Victim:</span>
+          <span className="col-span-3">{selectedEmergency.victimMatNo}</span>
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <span className="text-sm font-medium">Time:</span>
+          <span className="col-span-3">
+            {formatTimestamp(selectedEmergency.createdAt)}
+          </span>
+        </div>
+        <div className="grid grid-cols-4 items-start gap-4">
+          <span className="text-sm font-medium">Description:</span>
+          <p className="col-span-3">{selectedEmergency.description}</p>
+        </div>
+
+        {/* MEDICAL INFO */}
+        {selectedEmergency.medicalInfo ? (
+          <div className="grid grid-cols-4 items-start gap-4">
+            <span className="text-sm font-medium">Medical Info:</span>
+            <div className="col-span-3">
+              <p>
+                <strong>Allergies:</strong>{" "}
+                {selectedEmergency.medicalInfo.allergies || "None"}
+              </p>
+              <p>
+                <strong>Conditions:</strong>{" "}
+                {selectedEmergency.medicalInfo.conditions || "None"}
+              </p>
+              <p>
+                <strong>Medications:</strong>{" "}
+                {selectedEmergency.medicalInfo.medications || "None"}
+              </p>
             </div>
+          </div>
+        ) : (
+          <p className="text-muted-foreground italic">
+            No medical info provided.
+          </p>
+        )}
+      </div>
 
-            <DialogFooter>
-              {selectedEmergency.status !== "resolved" && (
-                <Button onClick={handleResolveEmergency} disabled={isLoading}>
-                  {isLoading ? "Processing..." : "Mark as Resolved"}
-                </Button>
-              )}
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
+      <DialogFooter>
+        {selectedEmergency.status !== "resolved" && (
+          <Button onClick={handleResolveEmergency} disabled={isLoading}>
+            {isLoading ? "Processing..." : "Mark as Resolved"}
+          </Button>
+        )}
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+)}
+
+
     </div>
   );
 }
