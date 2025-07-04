@@ -58,7 +58,7 @@ export default function ClinicDashboard() {
   const [selectedEmergency, setSelectedEmergency] = useState<Emergency | null>(
     null
   );
-  
+  const [EmergencyData, setEmergencyData] = useState<Emergency | null>(null);
 
   useEffect(() => {
     fetchEmergencies();
@@ -67,6 +67,17 @@ export default function ClinicDashboard() {
     const interval = setInterval(fetchEmergencies, 3000); // Poll every 30 seconds
 
     return () => clearInterval(interval);
+  }, []);
+  useEffect(() => {
+    fetch("/api/emergency/all")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setEmergencyData(data);
+      })
+      .catch((err) => {
+        console.error("Error parsing JSON from /api/emergency/all", err);
+      });
   }, []);
 
   const fetchEmergencies = async () => {
@@ -86,7 +97,7 @@ export default function ClinicDashboard() {
   //const handleViewEmergency = (emergency: SetStateAction<null>) => {
   const handleViewEmergency = (emergency: Emergency) => {
     setSelectedEmergency(emergency);
-    
+
     setIsDialogOpen(true);
   };
 
@@ -329,7 +340,7 @@ export default function ClinicDashboard() {
                 <p className="col-span-3">{selectedEmergency.description}</p>
               </div>
               {/* displays the medical info of a selected mat no */}
-              { selectedEmergency.medicalInfo ? (
+              {selectedEmergency.medicalInfo ? (
                 <div className="grid grid-cols-4 items-start gap-4">
                   <span className="text-sm font-medium">Medical Info:</span>
                   <div className="col-span-3">
@@ -347,12 +358,11 @@ export default function ClinicDashboard() {
                     </p>
                   </div>
                 </div>
-              )
-              : (
-                <p className="text-muted-foreground italic">No medical info provided.</p>
+              ) : (
+                <p className="text-muted-foreground italic">
+                  No medical info provided.
+                </p>
               )}
-            
-            
             </div>
 
             <DialogFooter>

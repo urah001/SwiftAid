@@ -98,7 +98,7 @@ export default function StudentDashboard() {
           location,
           victimMatNo: victimMatNo || user?.email,
           description,
-          reporterMatNo: user?.email,
+          reporterMatNo: user?.email, 
         }),
       });
 

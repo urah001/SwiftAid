@@ -1,99 +1,66 @@
-import { NextResponse } from "next/server"
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
-import { isClinicStaff } from "@/lib/auth"
-import { prisma } from "@/lib/db"
+import { NextResponse } from "next/server";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { isClinicStaff } from "@/lib/auth";
+import { prisma } from "@/lib/db";
 
-// Set this to true to bypass authentication during development
-const BYPASS_AUTH_FOR_TESTING = true
+const BYPASS_AUTH_FOR_TESTING = true;
 
-export async function GET() { 
+export async function GET() {
   try {
-    // Skip authentication check if bypass flag is enabled
     if (!BYPASS_AUTH_FOR_TESTING) {
-      const { getUser, isAuthenticated } = getKindeServerSession()
-      const user = await getUser()
-      const isAuth = await isAuthenticated()
+      const { getUser, isAuthenticated } = getKindeServerSession();
+      const user = await getUser();
+      const isAuth = await isAuthenticated();
 
       if (!isAuth || !user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
 
-      // Check if user is clinic staff
-      const isClinic = await isClinicStaff(user.id)
-
+      const isClinic = await isClinicStaff(user.id);
       if (!isClinic) {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
     }
 
-    // Mock data for testing when database is not set up
-    const mockActive = [
-      {
-        id: "mock-emergency-1",
-        emergencyType: "medical",
-        location: "Science Building",
-        description: "Student feeling dizzy and having trouble breathing",
-        reporterMatNo: "22L1CY123",
-        victimMatNo: "22L1CY456",
-        status: "active",
-        createdAt: new Date().toISOString(),
-        medicalInfo: {
-          allergies: "Dust",
-          conditions: "Asthma",
-          medications: "Ventolin inhaler",
-        },
-      },
-      {
-        id: "mock-emergency-2",
-        emergencyType: "injury",
-        location: "Sports Complex",
-        description: "Student fell during basketball practice, possible ankle sprain",
-        reporterMatNo: "20L1CY456",
-        victimMatNo: "20L1CY891",
-        status: "active",
-        createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-        medicalInfo: null,
-      },
-    ]
+    // Fetch all emergencies
+    const emergencies = await prisma.emergency.findMany({
+      orderBy: { createdAt: "desc" },
+    });
 
-    const mockResolved = [
-      {
-        id: "mock-emergency-3",
-        emergencyType: "medical",
-        location: "Dormitory A",
-        description: "Student with severe headache and fever",
-        reporterMatNo: "20L1CY456",
-        victimMatNo: "20L1CY456",
-        status: "resolved",
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
-        resolvedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-        medicalInfo: null,
-      },
-    ]
+    // Attach medical info from victimMatNo -> User -> MedicalInfo
+    const enrichedEmergencies = await Promise.all(
+      emergencies.map(async (e) => {
+        try {
+          if (!e.victimMatNo) return { ...e, medicalInfo: null };
 
-    try {
-      // Try to get real data from database
-      const active = await prisma.emergency.findMany({
-        where: { status: "active" },
-        orderBy: { createdAt: "desc" },
-        include: { medicalInfo: true },
+          const user = await prisma.user.findFirst({
+            where: { matNo: e.victimMatNo || undefined },
+           // include: { medicalInfo: true },
+          });
+       //   console.log(user)
+
+          return {
+            ...e,
+         //   medicalInfo: user?.medicalInfo || null,
+          };
+        } catch (err) {
+          console.error(`Failed to get medical info for ${e.victimMatNo}:`, err);
+          return { ...e, medicalInfo: null };
+        }
       })
+    );
 
-      const resolved = await prisma.emergency.findMany({
-        where: { status: "resolved" },
-        orderBy: { createdAt: "desc" },
-        take: 20,
-        include: { medicalInfo: true },
-      })
+     
 
-      return NextResponse.json({ active, resolved })
-    } catch (dbError) {
-      // If database error, return mock data
-      console.log("Using mock data due to database error:", dbError)
-      return NextResponse.json({ active: mockActive, resolved: mockResolved })
-    }
-  } catch (error) {
-    console.error("Error fetching emergencies:", error)
-    return NextResponse.json({ error: "Failed to fetch emergencies" }, { status: 500 })
+    const active = enrichedEmergencies.filter((e) => e.status === "active");
+    const resolved = enrichedEmergencies.filter((e) => e.status === "resolved");
+
+    return NextResponse.json({ active, resolved });
+  } catch (err) {
+    console.error("Failed to fetch emergencies:", err);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

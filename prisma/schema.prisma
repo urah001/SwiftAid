@@ -10,6 +10,7 @@ datasource db {
 model User {
   id                  String       @id
   email               String       @unique
+  matNo               String?      
   firstName           String?
   lastName            String?
   role                String       @default("student")
