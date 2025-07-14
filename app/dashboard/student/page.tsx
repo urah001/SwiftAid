@@ -260,7 +260,7 @@ export default function StudentDashboard() {
                 </Label>
                 <Input
                   id="victim-matno"
-                  placeholder="Leave blank if you are the victim"
+                  placeholder="provide the victim or your matNo"
                   value={victimMatNo}
                   onChange={(e) => setVictimMatNo(e.target.value)}
                 />
