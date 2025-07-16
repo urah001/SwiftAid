@@ -32,7 +32,7 @@ export default async function DashboardLayout({
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-xl">
-            <span className="text-primary">MedAlert</span>
+            <span className="text-primary">SwiftAid</span>
             <span>Response System</span>
           </div>
           <UserNav user={user} />
